@@ -12,7 +12,14 @@ import 'vant/lib/index.css'
 
 import 'amfe-flexible'
 
+// 全局导入组件
+import HmHeader from './components/HmHeader.vue'
+import HmLogo from './components/HmLogo.vue'
+
 Vue.use(Vant)
+// 全局注册组件
+Vue.component('hm-header', HmHeader)
+Vue.component('hm-logo', HmLogo)
 
 Vue.config.productionTip = false
 
