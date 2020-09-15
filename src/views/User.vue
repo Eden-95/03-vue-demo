@@ -1,6 +1,6 @@
 <template>
   <div class="user">
-    <div class="header">
+    <div class="header" @click="$router.push('/user-edit')">
       <div class="avatar">
         <img :src="$axios.defaults.baseURL + user.head_img" alt />
       </div>
@@ -28,7 +28,7 @@
       <template>我的收藏</template>
       <template #content>文章/视频</template>
     </hm-navitem>
-    <hm-navitem>设置</hm-navitem>
+    <hm-navitem to="/user-edit">设置</hm-navitem>
     <div class="bot">
       <van-button type="danger" block @click="logout">退出</van-button>
     </div>
