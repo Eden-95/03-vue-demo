@@ -2,30 +2,70 @@
   <div class="user">
     <div class="header">
       <div class="avatar">
-        <img src="../assets/avatar.jpg" alt />
+        <img :src="$axios.defaults.baseURL + user.head_img" alt />
       </div>
       <div class="title">
         <div class="name">
-          <span class="iconfont iconxingbienan"></span>
-          <span>章乐韵</span>
+          <span v-if="user.gender===1" class="iconfont iconxingbienan"></span>
+          <span v-else class="iconfont iconxingbienv"></span>
+          <span>{{user.nickname}}</span>
         </div>
-        <div class="time">2020-20-20</div>
+        <div class="time">{{user.create_date | time}}</div>
       </div>
       <div class="right">
         <span class="iconfont iconjiantou1"></span>
       </div>
     </div>
+    <hm-navitem to="/my-follow">
+      <template>我的关注</template>
+      <template #content>关注的用户</template>
+    </hm-navitem>
+    <hm-navitem>
+      <template>我的跟帖</template>
+      <template #content>跟帖/回复</template>
+    </hm-navitem>
+    <hm-navitem>
+      <template>我的收藏</template>
+      <template #content>文章/视频</template>
+    </hm-navitem>
+    <hm-navitem>设置</hm-navitem>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      user: ''
+    }
+  },
+  async created() {
+    const token = localStorage.getItem('token')
+    const userId = localStorage.getItem('userId')
+    const res = await this.$axios.get(`/user/${userId}`, {
+      headers: {
+        Authorization: token
+      }
+    })
+    // console.log(res)
+    // console.log(userId)
+    const { statusCode, data } = res.data
+    if (statusCode === 200) {
+      this.user = data
+    } else if (statusCode === 401) {
+      this.$toast('用户验证失败')
+      this.$router.push('/login')
+      localStorage.removeItem('tokne')
+      localStorage.removeItem('userId')
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
 .header {
   display: flex;
-  padding: 20px;
+  padding: 20px 10px;
   align-items: center;
   border-bottom: 3px solid #ccc;
   .avatar {
@@ -43,8 +83,13 @@ export default {}
     .name {
       font-size: 16px;
       .iconfont {
-        color: aqua;
         padding-right: 5px;
+      }
+      .iconxingbienan {
+        color: aqua;
+      }
+      .iconxingbienv {
+        color: pink;
       }
     }
     .time {
@@ -56,7 +101,7 @@ export default {}
   .right {
     .iconfont {
       font-size: 22px;
-      color: #666;
+      color: #ccc;
     }
   }
 }

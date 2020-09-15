@@ -16,6 +16,9 @@ import axios from 'axios'
 // 全局导入组件
 import HmHeader from './components/HmHeader.vue'
 import HmLogo from './components/HmLogo.vue'
+import HmNavitem from './components/HmNavitem.vue'
+
+import moment from 'moment'
 
 Vue.prototype.$axios = axios
 axios.defaults.baseURL = 'http://localhost:3000'
@@ -24,8 +27,13 @@ Vue.use(Vant)
 // 全局注册组件
 Vue.component('hm-header', HmHeader)
 Vue.component('hm-logo', HmLogo)
+Vue.component('hm-navitem', HmNavitem)
 
 Vue.config.productionTip = false
+// 全局过滤器
+Vue.filter('time', input => {
+  return moment(input).format('YYYY-MM-DD')
+})
 
 new Vue({
   router,
