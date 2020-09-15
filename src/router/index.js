@@ -16,5 +16,13 @@ const routes = [
 const router = new VueRouter({
   routes
 })
-
+// 配置全局导航守卫
+router.beforeEach(function(to, from, next) {
+  const token = localStorage.getItem('token')
+  if (to.name !== 'user' || token) {
+    next()
+  } else {
+    router.push('/login').catch(err => err)
+  }
+})
 export default router

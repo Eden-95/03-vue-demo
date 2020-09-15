@@ -6,11 +6,11 @@
       </div>
       <div class="title">
         <div class="name">
-          <span v-if="user.gender===1" class="iconfont iconxingbienan"></span>
+          <span v-if="user.gender === 1" class="iconfont iconxingbienan"></span>
           <span v-else class="iconfont iconxingbienv"></span>
-          <span>{{user.nickname}}</span>
+          <span>{{ user.nickname }}</span>
         </div>
-        <div class="time">{{user.create_date | time}}</div>
+        <div class="time">{{ user.create_date | time }}</div>
       </div>
       <div class="right">
         <span class="iconfont iconjiantou1"></span>
@@ -40,23 +40,13 @@ export default {
     }
   },
   async created() {
-    const token = localStorage.getItem('token')
     const userId = localStorage.getItem('userId')
-    const res = await this.$axios.get(`/user/${userId}`, {
-      headers: {
-        Authorization: token
-      }
-    })
+    const res = await this.$axios.get(`/user/${userId}`)
     // console.log(res)
     // console.log(userId)
     const { statusCode, data } = res.data
     if (statusCode === 200) {
       this.user = data
-    } else if (statusCode === 401) {
-      this.$toast('用户验证失败')
-      this.$router.push('/login')
-      localStorage.removeItem('tokne')
-      localStorage.removeItem('userId')
     }
   }
 }
