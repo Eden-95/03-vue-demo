@@ -29,6 +29,9 @@
       <template #content>文章/视频</template>
     </hm-navitem>
     <hm-navitem>设置</hm-navitem>
+    <div class="bot">
+      <van-button type="danger" block @click="logout">退出</van-button>
+    </div>
   </div>
 </template>
 
@@ -47,6 +50,22 @@ export default {
     const { statusCode, data } = res.data
     if (statusCode === 200) {
       this.user = data
+    }
+  },
+  methods: {
+    async logout() {
+      try {
+        await this.$dialog.confirm({
+          title: '温馨提示',
+          message: '你确定要退出吗？'
+        })
+      } catch {
+        return this.$toast('取消退出')
+      }
+      localStorage.removeItem('token')
+      localStorage.removeItem('userId')
+      this.$router.push('/login')
+      this.$toast.success('退出成功')
     }
   }
 }
@@ -94,5 +113,9 @@ export default {
       color: #ccc;
     }
   }
+}
+.bot {
+  margin-top: 20px;
+  padding: 0 10px;
 }
 </style>
