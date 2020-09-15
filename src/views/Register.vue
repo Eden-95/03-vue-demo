@@ -98,4 +98,13 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="less" scoped>
+.tips {
+  padding: 10px 20px;
+  font-size: 16px;
+  text-align: right;
+  a {
+    color: red;
+  }
+}
+</style>
