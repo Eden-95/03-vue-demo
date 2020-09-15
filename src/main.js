@@ -11,10 +11,14 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 
 import 'amfe-flexible'
+import axios from 'axios'
 
 // 全局导入组件
 import HmHeader from './components/HmHeader.vue'
 import HmLogo from './components/HmLogo.vue'
+
+Vue.prototype.$axios = axios
+axios.defaults.baseURL = 'http://localhost:3000'
 
 Vue.use(Vant)
 // 全局注册组件

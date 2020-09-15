@@ -20,17 +20,23 @@
         :rules="rules.password"
       />
       <div style="margin: 16px;">
-        <van-button block type="info" native-type="submit">
-          登录
-        </van-button>
+        <van-button block type="info" native-type="submit">登录</van-button>
       </div>
     </van-form>
+    <p class="tips">
+      没有账号？去
+      <router-link to="/register">注册</router-link>
+    </p>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 export default {
+  created() {
+    const { username, password } = this.$route.params
+    this.username = username
+    this.password = password
+  },
   data() {
     return {
       username: '',
@@ -57,7 +63,7 @@ export default {
   },
   methods: {
     async login() {
-      const res = await axios.post('http://localhost:3000/login', {
+      const res = await this.$axios.post('/login', {
         username: this.username,
         password: this.password
       })
@@ -76,4 +82,13 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="less">
+.tips {
+  padding: 10px 20px;
+  font-size: 16px;
+  text-align: right;
+  a {
+    color: red;
+  }
+}
+</style>
