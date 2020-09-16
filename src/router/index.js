@@ -6,6 +6,7 @@ import Register from '../views/Register.vue'
 import User from '../views/User.vue'
 import UserEdit from '../views/UserEdit.vue'
 import MyFollow from '../views/MyFollow.vue'
+import MyComment from '../views/MyComment.vue'
 
 Vue.use(VueRouter)
 
@@ -14,7 +15,8 @@ const routes = [
   { path: '/register', component: Register, name: 'register' },
   { path: '/user', component: User, name: 'user' },
   { path: '/user-edit', component: UserEdit, name: 'user-edit' },
-  { path: '/my-follow', component: MyFollow, name: 'my-follow' }
+  { path: '/my-follow', component: MyFollow, name: 'my-follow' },
+  { path: '/my-comment', component: MyComment, name: 'my-comment' }
 ]
 
 const router = new VueRouter({
@@ -24,7 +26,7 @@ const router = new VueRouter({
 router.beforeEach(function(to, from, next) {
   const token = localStorage.getItem('token')
 
-  const authUrls = ['/user', '/user-edit']
+  const authUrls = ['/user', '/user-edit', '/my-follow', '/my-comment']
   if (!authUrls.includes(to.path) || token) {
     next()
   } else {
