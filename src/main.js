@@ -60,6 +60,16 @@ Vue.filter('time', input => {
   return moment(input).format('YYYY-MM-DD')
 })
 
+// 处理图片
+Vue.prototype.$url = function(url) {
+  if (url.startsWith('http')) {
+    // 网络图片
+    return url
+  } else {
+    return axios.defaults.baseURL + url
+  }
+}
+
 new Vue({
   router,
   render: h => h(App)
