@@ -16,18 +16,19 @@
     </div>
     <!-- tab栏 -->
     <van-tabs v-model="active" sticky animated swipeable>
-      <van-tab title="标签 1">内容 1</van-tab>
-      <van-tab title="标签 2">内容 2</van-tab>
-      <van-tab title="标签 3">内容 3</van-tab>
-      <van-tab title="标签 4">内容 4</van-tab>
-      <van-tab title="标签 1">内容 1</van-tab>
-      <van-tab title="标签 2">内容 2</van-tab>
-      <van-tab title="标签 3">内容 3</van-tab>
-      <van-tab title="标签 4">内容 4</van-tab>
-      <van-tab title="标签 1">内容 1</van-tab>
-      <van-tab title="标签 2">内容 2</van-tab>
-      <van-tab title="标签 3">内容 3</van-tab>
-      <van-tab title="标签 4">内容 4</van-tab>
+      <van-tab :title="tab.name" v-for="tab in tabList" :key="tab.id">
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+            :immediate-check="false"
+          >
+            <hm-post :post="item" v-for="item in newsList" :key="item.id"></hm-post>
+          </van-list>
+        </van-pull-refresh>
+      </van-tab>
     </van-tabs>
   </div>
 </template>
@@ -36,7 +37,78 @@
 export default {
   data() {
     return {
-      active: 0
+      active: 0,
+      tabList: [],
+      newsList: [],
+      pageIndex: 1,
+      pageSize: 5,
+      loading: false,
+      finished: false,
+      refreshing: false
+    }
+  },
+  created() {
+    this.getTabList()
+  },
+  methods: {
+    async getTabList() {
+      const res = await this.$axios.get('/category')
+      // console.log(res)
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.tabList = data
+        // console.log(this.tabList)
+        // 发送请求获取第一个tab栏的数据
+        this.getNewsList(this.tabList[0].id)
+      }
+    },
+    async getNewsList(id) {
+      const res = await this.$axios.get('/post', {
+        params: {
+          category: id,
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize
+        }
+      })
+      const { statusCode, data } = res.data
+      if (statusCode === 200) {
+        this.newsList = [...this.newsList, ...data]
+        console.log(this.newsList)
+        this.loading = false
+        this.refreshing = false
+        if (data.length < this.pageSize) {
+          this.finished = true
+        }
+      }
+    },
+    onLoad() {
+      setTimeout(() => {
+        console.log('需要加载更多了')
+        // 加载下一页的数据
+        this.pageIndex++
+        // 当前栏目
+        this.getNewsList(this.tabList[this.active].id)
+      }, 1000)
+    },
+    onRefresh() {
+      this.newsList = []
+      this.pageIndex = 1
+      this.finished = false
+      this.loading = true
+      setTimeout(() => {
+        this.getNewsList(this.tabList[this.active].id)
+      }, 1000)
+    }
+  },
+  watch: {
+    active(value) {
+      this.newsList = []
+      this.pageIndex = 1
+      this.finished = false
+      this.loading = true
+      setTimeout(() => {
+        this.getNewsList(this.tabList[value].id)
+      }, 1000)
     }
   }
 }
