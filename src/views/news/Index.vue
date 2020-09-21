@@ -15,6 +15,11 @@
       </div>
     </div>
     <!-- tab栏 -->
+    <van-sticky>
+      <div class="more" @click="$router.push('/manage')">
+        <span class="iconfont iconlianjie"></span>
+      </div>
+    </van-sticky>
     <van-tabs v-model="active" sticky animated swipeable>
       <van-tab :title="tab.name" v-for="tab in tabList" :key="tab.id">
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
@@ -52,6 +57,16 @@ export default {
   },
   methods: {
     async getTabList() {
+      // 先判断缓存是否存在,
+      // 存在
+      const activeList = JSON.parse(localStorage.getItem('activeList'))
+      if (activeList) {
+        this.tabList = activeList
+        // 发送请求获取第一个tab栏的数据
+        this.getNewsList(this.tabList[0].id)
+        return
+      }
+      // 不存在，发请求
       const res = await this.$axios.get('/category')
       // console.log(res)
       const { statusCode, data } = res.data
@@ -150,6 +165,24 @@ export default {
     .iconwode {
       font-size: 20px;
     }
+  }
+}
+/deep/ .van-tabs__wrap {
+  width: 85%;
+}
+.more {
+  width: 15%;
+  height: 44px;
+  position: absolute;
+  right: 0;
+  z-index: 999;
+  background-color: #fff;
+  text-align: center;
+  line-height: 44px;
+}
+.more-sticky {
+  /deep/ .van-sticky--fixed {
+    z-index: 100;
   }
 }
 </style>
